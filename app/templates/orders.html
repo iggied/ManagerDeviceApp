@@ -1,0 +1,26 @@
+<ion-view title="Orders">
+  <ion-nav-buttons side="left">
+    <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+  </ion-nav-buttons>
+  <ion-content class="has-header">
+    <ion-list>
+      <ion-item class="item-icon-right" ng-repeat="order in orders">
+        {{order.order.staffId}}
+        {{order.order.tableArea}}
+        {{order.order.tableNumber}}
+        {{order.order.created_on}}
+
+        <ion-list>
+          <ion-item class="item-icon-left" ng-repeat="item in order.order.data">
+            {{item.itemName}}
+            {{item.itemDescription}}
+            {{item.priceCatCode}}
+            {{item.quantity}}
+          </ion-item>
+        </ion-list>
+
+        <i class="icon ion-chevron-right icon-accessory"></i>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>

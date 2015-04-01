@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
-    <title>"ManagerDeviceApp"</title>
+    <title>Manager</title>
 
     <!-- build:css styles/vendor.css -->
     <!-- <link rel="stylesheet" href="vendor/some.contrib.css"> -->
@@ -18,7 +18,8 @@
   </head>
 
   <body ng-app="ManagerDeviceApp">
-    <ion-nav-view></ion-nav-view>
+  <ion-nav-view></ion-nav-view>
+
 
     <!-- build:js scripts/vendor.js -->
     <!-- <script src="vendor/someContribJs.js"></script> -->
@@ -27,9 +28,11 @@
     <script src="lib/angular-animate/angular-animate.js"></script>
     <script src="lib/angular-sanitize/angular-sanitize.js"></script>
     <script src="lib/angular-ui-router/release/angular-ui-router.js"></script>
-    <script src="lib/collide/collide.js"></script>
     <script src="lib/ionic/release/js/ionic.js"></script>
     <script src="lib/ionic/release/js/ionic-angular.js"></script>
+    <script src="lib/firebase/firebase.js"></script>
+    <script src="lib/angularfire/dist/angularfire.js"></script>
+    <script src="lib/angular-resource/angular-resource.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
@@ -37,10 +40,32 @@
     <script src="cordova.js"></script>
 
 
-        <!-- build:js scripts/scripts.js -->
-        <script src="scripts/config.js"></script>
-        <script src="scripts/app.js"></script>
-        <script src="scripts/controllers.js"></script>
-        <!-- endbuild -->
+    <!-- build:js scripts/scripts.js -->
+    <script src="scripts/modules.js"></script>
+    <script src="scripts/config.js"></script>
+    <script src="scripts/app.js"></script>
+    <script src="scripts/controllers.js"></script>
+    <!-- endbuild -->
+
+
+  <script id="login.html" type="text/ng-template">
+    <ion-view title="{{programName}} Manager App - Staff login">
+      <ion-content>
+        <form class="list list-inset" ng-submit="staffLogin()">
+          <label class="item item-input">
+            <span class="input-label">Staff Id</span>
+            <input type="text" ng-model="staffInput.Id" placeholder="Type your Id" required autofocus>
+          </label>
+          <label class="item item-input">
+            <span class="input-label">Password</span>
+            <input type="password" ng-model="staffInput.Pin" placeholder="Type your password" required>
+          </label>
+
+          <button class="button button-positive button-block">Login</button>
+        </form>
+      </ion-content>
+    </ion-view>
+  </script>
+
 </body>
 </html>

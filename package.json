@@ -33,7 +33,7 @@
     "jshint-stylish": "~0.1.3",
     "load-grunt-tasks": "~0.2.0",
     "time-grunt": "~0.2.1",
-    "cordova": "~3.5.0-0.2.6",
+    "cordova": "~4.2.0",
     "lodash": "~2.4.1",
     "mkdirp": "~0.5.0",
     "ncp": "~0.6.0",
@@ -49,6 +49,8 @@
   "cordovaPlugins": [
     "https://github.com/driftyco/ionic-plugins-keyboard.git",
     "org.apache.cordova.statusbar",
-    "org.apache.cordova.console"
+    "org.apache.cordova.console",
+    "https://github.com/Red-Folder/bgs-core.git",
+    "https://github.com/couchbaselabs/Couchbase-Lite-PhoneGap-Plugin.git"
   ]
 }

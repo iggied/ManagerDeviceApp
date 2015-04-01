@@ -15,7 +15,7 @@ angular.module('ManagerDeviceApp.controllers', [])
   // Triggered in the login modal to close it
   $scope.closeLogin = function() {
     $scope.modal.hide();
-  },
+  };
 
   // Open the login modal
   $scope.login = function() {
@@ -34,16 +34,55 @@ angular.module('ManagerDeviceApp.controllers', [])
   }
 })
 
-.controller('PlaylistsCtrl', function($scope) {
-  $scope.playlists = [
-    { title: 'Reggae', id: 1 },
-    { title: 'Chill', id: 2 },
-    { title: 'Dubstep', id: 3 },
-    { title: 'Indie', id: 4 },
-    { title: 'Rap', id: 5 },
-    { title: 'Cowbell', id: 6 }
-  ];
-})
+.controller('LoginCtrl', ['$scope', '$state', '$rootScope', 'StaffAPIclient', function($scope, $state, $rootScope, StaffAPIclient) {
+  $scope.staffInput = {
+    Id: "",
+    Pin: ""
+  };
+
+  $scope.staffLogin = function() {
+    $rootScope.staffId = "";
+
+    var staffId = $scope.staffInput.Id, staffPin = $scope.staffInput.Pin;
+
+    StaffAPIclient.validateCreds({staffId: staffId, staffPin: staffPin},
+      function(data) {
+        if (data.valid === "1") {
+          $rootScope.staffId = staffId;
+          $state.go('app/orders');
+        }
+      });
+  };
+}])
+
+.controller('OrdersCtrl', ['$scope', '$ionicScrollDelegate', 'Db', 'OrderRes',
+    function($scope, $ionicScrollDelegate, Db, OrderRes) {
+  $scope.orders = [];
+
+
+    var update_seq = 0;
+
+    Db.changes({since : update_seq}, function(err, change){
+      //lastSeq = change.seq
+      console.log("change", err, change);
+
+      //angular.forEach(change, function(item){
+
+      //})
+
+      OrderRes.getOrderById({id: change.id})
+        .$promise.then( function (order) {
+          $scope.orders.push(order);
+          $scope.$apply();
+          $ionicScrollDelegate.scrollBottom();
+        });
+
+      //$scope.orders.push({id: change.id});
+
+    })
+
+
+}])
 
 .controller('PlaylistCtrl', function($scope, $stateParams) {
 });

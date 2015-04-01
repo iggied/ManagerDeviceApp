@@ -6,7 +6,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('ManagerDeviceApp', ['ionic', 'config', 'ManagerDeviceApp.controllers'])
+angular.module('ManagerDeviceApp', ['ionic', 'config', 'ngResource', 'ManagerDeviceApp.controllers'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -19,11 +19,24 @@ angular.module('ManagerDeviceApp', ['ionic', 'config', 'ManagerDeviceApp.control
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
+
   });
 })
 
+.constant('managerUrl', 'http://192.168.56.101:8080/outlet/serve')
+
 .config(function($stateProvider, $urlRouterProvider) {
   $stateProvider
+
+    .state('login', {
+      url: '/login',
+      views: {
+        '@': {
+          templateUrl: 'login.html',
+          controller: 'LoginCtrl'
+        }
+      }
+    })
 
     .state('app', {
       url: '/app',
@@ -32,11 +45,12 @@ angular.module('ManagerDeviceApp', ['ionic', 'config', 'ManagerDeviceApp.control
       controller: 'AppCtrl'
     })
 
-    .state('app.search', {
-      url: '/search',
+    .state('app.orders', {
+      url: '/orders',
       views: {
         'menuContent' :{
-          templateUrl: 'templates/search.html'
+          templateUrl: 'templates/orders.html',
+          controller: 'OrdersCtrl'
         }
       }
     })
@@ -49,11 +63,12 @@ angular.module('ManagerDeviceApp', ['ionic', 'config', 'ManagerDeviceApp.control
         }
       }
     })
+
     .state('app.playlists', {
       url: '/playlists',
       views: {
         'menuContent' :{
-          templateUrl: 'templates/playlists.html',
+          templateUrl: 'templates/orders.html',
           controller: 'PlaylistsCtrl'
         }
       }
@@ -69,6 +84,27 @@ angular.module('ManagerDeviceApp', ['ionic', 'config', 'ManagerDeviceApp.control
       }
     });
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/app/playlists');
-});
+  $urlRouterProvider.otherwise('/app/orders');
+})
+
+.factory('Db', function(){
+  var Coax = require("coax");
+  return Coax(['http://username:password@localhost:5984', 'orderdb']);
+})
+
+.factory('StaffAPIclient', ['$resource', 'managerUrl', function($resource, managerUrl) {
+
+    return $resource( managerUrl, {},
+      {validateCreds: {method: 'GET', params: {action: "VALIDATECREDS", staffId: "@StaffId", staffPin: "@StaffPin"}}});
+}])
+
+
+.factory('OrderRes', ['$resource', 'managerUrl', function($resource, managerUrl) {
+
+    return $resource( managerUrl, {action: "@action"},
+        {getOrderById: {method: 'GET', params: {action: "GETORDERBYID", id: "@id"} }}
+    );
+  }
+])
+;
 
