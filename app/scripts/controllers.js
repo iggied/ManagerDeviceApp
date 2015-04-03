@@ -6,7 +6,7 @@ angular.module('ManagerDeviceApp.controllers', [])
   $scope.loginData = {};
 
   // Create the login modal that we will use later
-  $ionicModal.fromTemplateUrl('templates/login.html', {
+  $ionicModal.fromTemplateUrl('templates/old_login.html', {
     scope: $scope
   }).then(function(modal) {
     $scope.modal = modal;
@@ -49,7 +49,7 @@ angular.module('ManagerDeviceApp.controllers', [])
       function(data) {
         if (data.valid === "1") {
           $rootScope.staffId = staffId;
-          $state.go('app/orders');
+          $state.go('app.mainmenu');
         }
       });
   };
@@ -59,28 +59,30 @@ angular.module('ManagerDeviceApp.controllers', [])
     function($scope, $ionicScrollDelegate, Db, OrderRes) {
   $scope.orders = [];
 
+    OrderRes.getPendingOrders()
+      .$promise.then( function(data) {
 
-    var update_seq = 0;
+        angular.forEach(data, function(item){
+          $scope.orders.push(item);
+        })
 
-    Db.changes({since : update_seq}, function(err, change){
-      //lastSeq = change.seq
-      console.log("change", err, change);
+        Db( function(err, info) {
 
-      //angular.forEach(change, function(item){
+          Db.changes({since : info.update_seq}, function(err, change){
+            //lastSeq = change.seq
+            console.log("change", err, change);
 
-      //})
+            OrderRes.getOrderById({id: change.id})
+              .$promise.then( function (order) {
+                $scope.orders.push(order);
+                //$scope.$apply();
+                $ionicScrollDelegate.scrollBottom();
+              });
+          })
 
-      OrderRes.getOrderById({id: change.id})
-        .$promise.then( function (order) {
-          $scope.orders.push(order);
-          $scope.$apply();
-          $ionicScrollDelegate.scrollBottom();
         });
 
-      //$scope.orders.push({id: change.id});
-
-    })
-
+      })
 
 }])
 

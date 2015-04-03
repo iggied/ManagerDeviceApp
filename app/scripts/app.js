@@ -28,21 +28,21 @@ angular.module('ManagerDeviceApp', ['ionic', 'config', 'ngResource', 'ManagerDev
 .config(function($stateProvider, $urlRouterProvider) {
   $stateProvider
 
-    .state('login', {
-      url: '/login',
-      views: {
-        '@': {
-          templateUrl: 'login.html',
-          controller: 'LoginCtrl'
-        }
-      }
-    })
 
     .state('app', {
       url: '/app',
       abstract: true,
       templateUrl: 'templates/menu.html',
       controller: 'AppCtrl'
+    })
+
+    .state('app.mainmenu', {
+      url: '/mainmenu',
+      views: {
+        'menuContent' :{
+          templateUrl: 'mainmenu.html'
+        }
+      }
     })
 
     .state('app.orders', {
@@ -82,14 +82,25 @@ angular.module('ManagerDeviceApp', ['ionic', 'config', 'ngResource', 'ManagerDev
           controller: 'PlaylistCtrl'
         }
       }
-    });
+    })
+
+    .state('login', {
+      url: '/login',
+      views: {
+        '@': {
+          templateUrl: 'login.html',
+          controller: 'LoginCtrl'
+        }
+      }
+    })
+  ;
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/app/orders');
+  $urlRouterProvider.otherwise('/login');
 })
 
 .factory('Db', function(){
   var Coax = require("coax");
-  return Coax(['http://username:password@localhost:5984', 'orderdb']);
+  return Coax(['http://username:password@192.168.56.101:5984', 'orderdb']);
 })
 
 .factory('StaffAPIclient', ['$resource', 'managerUrl', function($resource, managerUrl) {
@@ -102,7 +113,8 @@ angular.module('ManagerDeviceApp', ['ionic', 'config', 'ngResource', 'ManagerDev
 .factory('OrderRes', ['$resource', 'managerUrl', function($resource, managerUrl) {
 
     return $resource( managerUrl, {action: "@action"},
-        {getOrderById: {method: 'GET', params: {action: "GETORDERBYID", id: "@id"} }}
+        {getOrderById: {method: 'GET', params: {action: "GETORDERBYID", id: "@id"} },
+         getPendingOrders: {method: 'GET', isArray:true, params: {action: "GETPENDINGORDERS"}}}
     );
   }
 ])
