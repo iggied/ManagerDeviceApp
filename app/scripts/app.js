@@ -113,8 +113,11 @@ angular.module('ManagerDeviceApp', ['ionic', 'config', 'ngResource', 'ManagerDev
 .factory('OrderRes', ['$resource', 'managerUrl', function($resource, managerUrl) {
 
     return $resource( managerUrl, {action: "@action"},
-        {getOrderById: {method: 'GET', params: {action: "GETORDERBYID", id: "@id"} },
-         getPendingOrders: {method: 'GET', isArray:true, params: {action: "GETPENDINGORDERS"}}}
+        { getOrderById:      { method: 'GET', params: {action: "GETORDERBYID", id: "@id"} },
+          getPendingOrders:  { method: 'GET', params: {action: "GETPENDINGORDERS"}, isArray:true },
+          confirmOrderPart:  { method: 'GET', params: {action: "CONFIRMORDERPART", id: "@id"} },
+          orderPartReceived: { method: 'GET', params: {action: "ORDERPARTDELIVERED", id: "@id"} }
+        }
     );
   }
 ])

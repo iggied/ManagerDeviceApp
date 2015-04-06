@@ -1,11 +1,12 @@
 <ion-view title="Orders">
   <ion-content class="has-header">
-    <ion-list>
+    <ion-list can-swipe="listCanSwipe">
       <ion-item class="item-icon-right" ng-repeat="order in orders">
         {{order.order.staffId}}
         {{order.order.tableArea}}
         {{order.order.tableNumber}}
-        {{order.order.created_on}}
+        {{order.status}}
+        {{order.created_on}}
 
         <ion-list>
           <ion-item class="item-icon-left" ng-repeat="item in order.order.data">
@@ -16,7 +17,15 @@
           </ion-item>
         </ion-list>
 
-        <i class="icon ion-chevron-right icon-accessory"></i>
+        <ion-option-button class="button-positive"
+                           ng-click="orderConfirmed(order)">
+          Confirm
+        </ion-option-button>
+        <ion-option-button class="button-info"
+                           ng-click="orderPaid(order)">
+          Paid
+        </ion-option-button>
+
       </ion-item>
     </ion-list>
   </ion-content>

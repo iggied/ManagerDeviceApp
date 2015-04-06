@@ -59,6 +59,8 @@ angular.module('ManagerDeviceApp.controllers', [])
     function($scope, $ionicScrollDelegate, Db, OrderRes) {
   $scope.orders = [];
 
+      $scope.listCanSwipe = true
+
     OrderRes.getPendingOrders()
       .$promise.then( function(data) {
 
@@ -68,21 +70,44 @@ angular.module('ManagerDeviceApp.controllers', [])
 
         Db( function(err, info) {
 
-          Db.changes({since : info.update_seq}, function(err, change){
+          Db.changes({since : info.update_seq, include_docs: true}, function(err, changes){
             //lastSeq = change.seq
-            console.log("change", err, change);
+            console.log("change", err, changes);
 
-            OrderRes.getOrderById({id: change.id})
-              .$promise.then( function (order) {
-                $scope.orders.push(order);
+
+            var oindex =  _.findIndex($scope.orders, {_id: changes.id});
+            if (oindex < 0)  {
+              $scope.orders.push(changes.doc);
+              console.log("order added to list");
+            }
+            else {
+              $scope.orders[oindex] = changes.doc;
+              console.log("order updated in list at index " + oindex);
+            }
+
+            //OrderRes.getOrderById({id: change.id})
+            //  .$promise.then( function (order) {
+            //angular.forEach(changes.results, function(change) {
+
+            //})
                 //$scope.$apply();
-                $ionicScrollDelegate.scrollBottom();
-              });
+            $ionicScrollDelegate.scrollBottom();
+            //  });
           })
 
         });
 
       })
+
+
+      $scope.orderConfirmed = function(order) {
+        console.log("order to confirm " + order._id)
+        OrderRes.confirmOrderPart({id: order._id})
+          .$promise.then( function(data) {
+            console.log("order confirmed " + order._id)
+          })
+      }
+
 
 }])
 
